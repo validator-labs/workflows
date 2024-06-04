@@ -40,6 +40,16 @@
       "matchManagers": ["dockerfile"],
       "addLabels": ["docker"],
       "automerge": true
+    },
+    {
+      "matchManagers": ["kustomize"],
+      "addLabels": ["kustomize"],
+      "automerge": true
+    },
+    {
+      "matchManagers": ["helm-values"],
+      "addLabels": ["helm_values"],
+      "automerge": true
     }
   ],
   "regexManagers": [
