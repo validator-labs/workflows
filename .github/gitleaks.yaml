@@ -1,7 +1,6 @@
-name: BulwarkGitLeaks
+name: GitLeaks
 
 on:
-  pull_request:
   workflow_dispatch:
 
 concurrency:
@@ -9,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gitleaks-pr-scan:
+  gitleaks:
     runs-on: [self-hosted, Linux, X64, validator]
     container:
       image: gcr.io/spectro-dev-public/bulwark/gitleaks:latest

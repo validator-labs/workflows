@@ -2,7 +2,6 @@
 name: GoVulnCheck
 
 on:
-  pull_request:
   workflow_dispatch:
 
 concurrency:
@@ -10,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  govulncheck-pr-scan:
+  govulncheck:
     runs-on: [self-hosted, Linux, X64, validator]
     container:
       image: gcr.io/spectro-images-public/golang:1.22-alpine
