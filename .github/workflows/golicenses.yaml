@@ -1,7 +1,7 @@
 name: GoLicenses
 
 on:
-  workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: golicenses-${{ github.ref }}

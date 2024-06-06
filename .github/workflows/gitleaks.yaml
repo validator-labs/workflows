@@ -1,7 +1,7 @@
 name: GitLeaks
 
 on:
-  workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: gitleaks-${{ github.ref }}
