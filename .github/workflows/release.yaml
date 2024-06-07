@@ -20,7 +20,6 @@ jobs:
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
-    # Release-please creates a PR that tracks all changes
     steps:
       - name: Checkout
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
@@ -58,8 +57,8 @@ jobs:
       packages: write
       id-token: write
     env:
-      IMAGE_TAG: quay.io/validator-labs/validator-plugin-maas:${{ needs.release-please.outputs.tag_name }}
-      IMAGE_NAME: validator-plugin-maas
+      IMAGE_TAG: quay.io/validator-labs/${{ github.event.repository.name }}:${{ needs.release-please.outputs.tag_name }}
+      IMAGE_NAME: ${{ github.event.repository.name }}
     steps:
       - name: Checkout
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
