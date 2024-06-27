@@ -88,6 +88,12 @@ lint: golangci-lint ## Run golangci-lint linter
 test: manifests generate fmt vet envtest helm ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
+.PHONY: setup-validator
+setup-validator:
+	@if [ ! -d ../validator ]; then \
+		git clone https://github.com/validator-labs/validator ../validator; \
+	fi
+
 ##@ Build
 
 .PHONY: build
@@ -212,18 +218,18 @@ $(HELMIFY): $(LOCALBIN)
 helm-build: helm helmify manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG) && cd ../../
 	$(KUSTOMIZE) build config/default | $(HELMIFY) -crd-dir
-	cat hack/extra-values.yaml >> chart/validator/values.yaml
+	cat hack/extra-values.yaml >> chart/$(CHART_NAME)/values.yaml
 
 .PHONY: helm-package
 helm-package: generate manifests
-	$(HELM) package --version $(CHART_VERSION) chart/validator/
-	mkdir -p charts && mv validator-*.tgz charts
-	$(HELM) repo index --url https://validator-labs.github.io/validator ./chart
-	mv charts/validator/index.yaml index.yaml
+	$(HELM) package --version $(CHART_VERSION) chart/$(CHART_NAME)/
+	mkdir -p charts && mv $(CHART_NAME)-*.tgz charts
+	$(HELM) repo index --url https://validator-labs.github.io/$(CHART_NAME) ./chart
+	mv charts/$(CHART_NAME)/index.yaml index.yaml
 
 .PHONY: frigate
 frigate:
-	frigate gen chart/validator --no-deps -o markdown > chart/validator/README.md
+	frigate gen chart/$(CHART_NAME) --no-deps -o markdown > chart/$(CHART_NAME)/README.md
 
 # go-install-tool will 'go install' any package with custom target and name of binary, if it doesn't exist
 # $1 - target path with name of binary (ideally with version)
