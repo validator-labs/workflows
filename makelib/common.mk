@@ -56,6 +56,7 @@ help: ## Display this help.
 ##@ Development
 
 reviewable: manifests fmt vet lint ## Ensure code is ready for review
+	git submodule update --remote
 	go mod tidy
 
 check-diff: reviewable ## Execute auto-gen code commands and ensure branch is clean
