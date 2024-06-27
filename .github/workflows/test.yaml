@@ -20,6 +20,9 @@ jobs:
           cache: false
           go-version-file: go.mod
 
+      - name: Ensure Reviewable
+        run: make check-diff
+
       - name: Test
         run: make test
 
