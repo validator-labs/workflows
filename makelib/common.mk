@@ -185,6 +185,8 @@ CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen-$(CONTROLLER_TOOLS_VERSION)
 ENVTEST ?= $(LOCALBIN)/setup-envtest-$(ENVTEST_VERSION)
 GOLANGCI_LINT ?= $(LOCALBIN)/golangci-lint-$(GOLANGCI_LINT_VERSION)
 GOCOVMERGE ?= $(LOCALBIN)/gocovmerge
+HELM = $(LOCALBIN)/helm-$(HELM_VERSION)
+HELMIFY ?= $(LOCALBIN)/helmify
 
 ## Tool Versions
 CHART_VERSION ?= v0.0.1 # x-release-please-version
@@ -221,10 +223,7 @@ gocovmerge: $(GOCOVMERGE) ## Download gocovmerge locally if necessary.
 $(GOCOVMERGE): $(LOCALBIN)
 	$(call go-install-tool,$(GOCOVMERGE),github.com/wadey/gocovmerge,${GOCOVMERGE_VERSION})
 
-HELM = $(shell pwd)/bin/$(OSARCH)/helm
 HELM_INSTALLER ?= "https://get.helm.sh/helm-$(HELM_VERSION)-$(GOOS)-$(GOARCH).tar.gz"
-HELMIFY ?= $(LOCALBIN)/helmify
-
 .PHONY: helm
 helm: $(HELM) ## Download helm locally if necessary.
 $(HELM): $(LOCALBIN)
