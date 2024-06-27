@@ -3,6 +3,10 @@
 
 .DEFAULT_GOAL := help
 
+# See https://stackoverflow.com/questions/11958626/make-file-warning-overriding-commands-for-target
+%: %-default
+	@ true
+
 ifneq (,$(wildcard ./.env))
 	include .env
 	export
@@ -85,13 +89,13 @@ lint: golangci-lint ## Run golangci-lint linter
 ##@ Test
 
 .PHONY: test
-test: manifests generate fmt vet envtest helm setup-validator ## Run tests.
+test-default: manifests generate fmt vet envtest helm setup-validator ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
-coverage: ## Show global test coverage
+coverage-default: ## Show global test coverage
 	go tool cover -func cover.out
 
-coverage-html: ## Open global test coverage report in your browser
+coverage-html-default: ## Open global test coverage report in your browser
 	go tool cover -html cover.out
 
 .PHONY: setup-validator
@@ -102,20 +106,17 @@ setup-validator:
 
 ##@ Build
 
-.PHONY: build
-build: manifests generate fmt vet ## Build manager binary.
+build-default: manifests generate fmt vet ## Build manager binary.
 	go build -o bin/manager cmd/main.go
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./cmd/main.go
 
-.PHONY: manifests
-manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
+manifests-default: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 
-.PHONY: generate
-generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
+generate-default: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
 ##@ Images
@@ -193,7 +194,7 @@ CHART_VERSION ?= v0.0.1 # x-release-please-version
 CONTROLLER_TOOLS_VERSION ?= v0.15.0
 ENVTEST_VERSION ?= release-0.18
 ENVTEST_K8S_VERSION ?= 1.27.1
-HELM_VERSION ?= v3.10.1
+HELM_VERSION ?= v3.14.0
 KUSTOMIZE_VERSION ?= v5.2.1
 GOLANGCI_LINT_VERSION ?= v1.59.1
 GOCOVMERGE_VERSION ?= latest
