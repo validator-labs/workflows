@@ -218,14 +218,7 @@ $(HELMIFY): $(LOCALBIN)
 helm-build: helm helmify manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG) && cd ../../
 	$(KUSTOMIZE) build config/default | $(HELMIFY) -crd-dir
-	cat hack/extra-values.yaml >> chart/$(CHART_NAME)/values.yaml
-
-.PHONY: helm-package
-helm-package: generate manifests
-	$(HELM) package --version $(CHART_VERSION) chart/$(CHART_NAME)/
-	mkdir -p charts && mv $(CHART_NAME)-*.tgz charts
-	$(HELM) repo index --url https://validator-labs.github.io/$(CHART_NAME) ./chart
-	mv charts/$(CHART_NAME)/index.yaml index.yaml
+	cat hack/extra-values.yaml >> chart/$(CHART_NAME)/values.yaml || echo "No extra values file found"
 
 .PHONY: frigate
 frigate:
