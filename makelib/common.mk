@@ -86,7 +86,7 @@ lint: golangci-lint ## Run golangci-lint linter
 	$(GOLANGCI_LINT) run
 
 .PHONY: test
-test: manifests generate fmt vet envtest helm ## Run tests.
+test: manifests generate fmt vet envtest helm setup-validator ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
 .PHONY: setup-validator
