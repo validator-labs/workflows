@@ -197,10 +197,9 @@ $(ENVTEST): $(LOCALBIN)
 golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
 $(GOLANGCI_LINT): $(LOCALBIN)
 	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint,${GOLANGCI_LINT_VERSION})
-    
-OSARCH=$(shell ./hack/get-os.sh)
+
 HELM = $(shell pwd)/bin/$(OSARCH)/helm
-HELM_INSTALLER ?= "https://get.helm.sh/helm-$(HELM_VERSION)-$(OSARCH).tar.gz"
+HELM_INSTALLER ?= "https://get.helm.sh/helm-$(HELM_VERSION)-$(GOOS)-$(GOARCH).tar.gz"
 HELMIFY ?= $(LOCALBIN)/helmify
 
 .PHONY: helm
