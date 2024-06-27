@@ -88,13 +88,15 @@ lint: golangci-lint ## Run golangci-lint linter
 
 ##@ Test
 
-.PHONY: test
+.PHONY: test-default
 test-default: manifests generate fmt vet envtest helm setup-validator ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
+.PHONY: coverage-default
 coverage-default: ## Show global test coverage
 	go tool cover -func cover.out
 
+.PHONY: coverage-html-default
 coverage-html-default: ## Open global test coverage report in your browser
 	go tool cover -html cover.out
 
