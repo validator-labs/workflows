@@ -108,12 +108,12 @@ setup-validator:
 
 ##@ Dependencies
 
-export PATH := $(PATH):$(RUNNER_TOOL_CACHE)
-
 ## Location to install dependencies to
 LOCALBIN ?= $(shell pwd)/bin
 $(LOCALBIN):
 	mkdir -p $(LOCALBIN)
+
+export PATH := $(PATH):$(RUNNER_TOOL_CACHE):$(LOCALBIN)
 
 ## Tool Binaries
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen-$(CONTROLLER_TOOLS_VERSION)
@@ -162,6 +162,7 @@ helm: $(HELM) ## Download helm locally if necessary.
 $(HELM): $(LOCALBIN)
 	[ -e "$(HELM)" ] && rm -rf "$(HELM)" || true
 	cd $(LOCALBIN) && curl -s $(HELM_INSTALLER) | tar -xzf - -C $(LOCALBIN)
+	ln -sf $(HELM) $(LOCALBIN)/helm
 
 .PHONY: kind
 kind:
