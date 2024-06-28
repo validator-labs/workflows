@@ -162,7 +162,7 @@ helm: $(HELM) ## Download helm locally if necessary.
 $(HELM): $(LOCALBIN)
 	[ -e "$(HELM)" ] && rm -rf "$(HELM)" || true
 	cd $(LOCALBIN) && curl -s $(HELM_INSTALLER) | tar -xzf - -C $(LOCALBIN)
-	mv $(LOCALBIN)/$(GOOS)-$(GOARCH)/helm $(LOCALBIN) && rm -rf $(LOCALBIN)/$(GOOS)-$(GOARCH)
+	mv $(LOCALBIN)/$(GOOS)-$(GOARCH)/helm $(HELM) && rm -rf $(LOCALBIN)/$(GOOS)-$(GOARCH)
 	ln -sf $(HELM) $(LOCALBIN)/helm
 
 .PHONY: kind
