@@ -108,35 +108,33 @@ setup-validator:
 
 ##@ Dependencies
 
+export PATH := $(PATH):$(RUNNER_TOOL_CACHE)
+
 ## Location to install dependencies to
 LOCALBIN ?= $(shell pwd)/bin
 $(LOCALBIN):
 	mkdir -p $(LOCALBIN)
 
 ## Tool Binaries
-KUBECTL ?= kubectl
-KUSTOMIZE ?= $(LOCALBIN)/kustomize-$(KUSTOMIZE_VERSION)
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen-$(CONTROLLER_TOOLS_VERSION)
 ENVTEST ?= $(LOCALBIN)/setup-envtest-$(ENVTEST_VERSION)
+GOCOVMERGE ?= $(LOCALBIN)/gocovmerge-$(GOCOVMERGE_VERSION)
 GOLANGCI_LINT ?= $(LOCALBIN)/golangci-lint-$(GOLANGCI_LINT_VERSION)
-GOCOVMERGE ?= $(LOCALBIN)/gocovmerge
 HELM = $(LOCALBIN)/helm-$(HELM_VERSION)
 HELMIFY ?= $(LOCALBIN)/helmify
+KIND_VERSION ?= 0.20.0
+KUBECTL_VERSION ?= 1.24.10
+KUBECTL ?= kubectl
+KUSTOMIZE ?= $(LOCALBIN)/kustomize-$(KUSTOMIZE_VERSION)
 
 ## Tool Versions
-CHART_VERSION ?= v0.0.1 # x-release-please-version
 CONTROLLER_TOOLS_VERSION ?= v0.15.0
 ENVTEST_VERSION ?= release-0.18
 ENVTEST_K8S_VERSION ?= 1.27.1
+GOCOVMERGE_VERSION ?= latest
+GOLANGCI_LINT_VERSION ?= v1.59.1
 HELM_VERSION ?= v3.14.0
 KUSTOMIZE_VERSION ?= v5.2.1
-GOLANGCI_LINT_VERSION ?= v1.59.1
-GOCOVMERGE_VERSION ?= latest
-
-.PHONY: kustomize
-kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
-$(KUSTOMIZE): $(LOCALBIN)
-	$(call go-install-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5,$(KUSTOMIZE_VERSION))
 
 .PHONY: controller-gen
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
@@ -148,15 +146,15 @@ envtest: $(ENVTEST) ## Download setup-envtest locally if necessary.
 $(ENVTEST): $(LOCALBIN)
 	$(call go-install-tool,$(ENVTEST),sigs.k8s.io/controller-runtime/tools/setup-envtest,$(ENVTEST_VERSION))
 
-.PHONY: golangci-lint
-golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
-$(GOLANGCI_LINT): $(LOCALBIN)
-	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint,${GOLANGCI_LINT_VERSION})
-
 .PHONY: gocovmerge
 gocovmerge: $(GOCOVMERGE) ## Download gocovmerge locally if necessary.
 $(GOCOVMERGE): $(LOCALBIN)
 	$(call go-install-tool,$(GOCOVMERGE),github.com/wadey/gocovmerge,${GOCOVMERGE_VERSION})
+
+.PHONY: golangci-lint
+golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
+$(GOLANGCI_LINT): $(LOCALBIN)
+	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint,${GOLANGCI_LINT_VERSION})
 
 HELM_INSTALLER ?= "https://get.helm.sh/helm-$(HELM_VERSION)-$(GOOS)-$(GOARCH).tar.gz"
 .PHONY: helm
@@ -164,6 +162,31 @@ helm: $(HELM) ## Download helm locally if necessary.
 $(HELM): $(LOCALBIN)
 	[ -e "$(HELM)" ] && rm -rf "$(HELM)" || true
 	cd $(LOCALBIN) && curl -s $(HELM_INSTALLER) | tar -xzf - -C $(LOCALBIN)
+
+.PHONY: kind
+kind:
+	@if [ "$(GITHUB_ACTIONS)" = "true" ]; then \
+		@command -v kind >/dev/null 2>&1 || { \
+			echo "Kind not found, downloading..."; \
+			curl -Lo $(RUNNER_TOOL_CACHE)/kind https://github.com/kubernetes-sigs/kind/releases/download/v$(KIND_VERSION)/kind-$(GOOS)-$(GOARCH); \
+			chmod +x $(RUNNER_TOOL_CACHE)/kind; \
+		} \
+	fi
+
+.PHONY: kubectl
+kubectl:
+	@if [ "$(GITHUB_ACTIONS)" = "true" ]; then \
+		@command -v kubectl >/dev/null 2>&1 || { \
+			echo "Kubectl not found, downloading..."; \
+			curl -Lo $(RUNNER_TOOL_CACHE)/kubectl https://dl.k8s.io/release/v$(KUBECTL_VERSION)/bin/$(GOOS)/$(GOARCH)/kubectl; \
+			chmod +x $(RUNNER_TOOL_CACHE)/kubectl; \
+		} \
+	fi
+
+.PHONY: kustomize
+kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
+$(KUSTOMIZE): $(LOCALBIN)
+	$(call go-install-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5,$(KUSTOMIZE_VERSION))
 
 # go-install-tool will 'go install' any package with custom target and name of binary, if it doesn't exist
 # $1 - target path with name of binary (ideally with version)
