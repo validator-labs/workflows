@@ -2,6 +2,14 @@ name: Release
 
 on:
   workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      releases_created:
+        description: "Boolean indicating if a release was created"
+        value: ${{ jobs.release-please.outputs.releases_created }}
+      tag_name:
+        description: "Release tag"
+        value: ${{ jobs.release-please.outputs.tag_name }}
 
 env:
   REGISTRY: quay.io
