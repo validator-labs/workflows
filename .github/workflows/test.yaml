@@ -76,7 +76,11 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           cd $GITHUB_WORKSPACE
-          ct lint --validate-maintainers=false --check-version-increment=false --chart-dirs chart --target-branch ${{ github.event.repository.default_branch }} --print-config
+          ctArgs=""
+          if [ -f $GITHUB_WORKSPACE/lintconf.yaml ]; then
+            ctArgs="--lint-conf $GITHUB_WORKSPACE/lintconf.yaml"
+          fi
+          ct lint --validate-maintainers=false --check-version-increment=false --chart-dirs chart --target-branch ${{ github.event.repository.default_branch }} --print-config $ctArgs
 
       - name: Set short SHA
         id: short-sha
