@@ -24,6 +24,8 @@ jobs:
 
       - name: Ensure Reviewable
         run: make check-diff
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Test
         run: make test
@@ -74,7 +76,7 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           cd $GITHUB_WORKSPACE
-          ct lint --validate-maintainers=false --check-version-increment=false --chart-dirs chart --target-branch ${{ github.event.repository.default_branch }}
+          ct lint --validate-maintainers=false --check-version-increment=false --chart-dirs chart --target-branch ${{ github.event.repository.default_branch }} --print-config
 
       - name: Set short SHA
         id: short-sha
