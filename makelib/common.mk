@@ -65,9 +65,13 @@ help: ## Display this help.
 
 ##@ Static Analysis
 
-reviewable: manifests fmt vet lint ## Ensure code is ready for review
+reviewable: manifests fmt vet lint reviewable-ext ## Ensure code is ready for review
 	git submodule update --remote
 	go mod tidy
+
+.PHONY: reviewable-ext-default
+reviewable-ext-default: ## optional reviewability extension (to be overridden)
+	@$(OK) reviewability extension (no-op)
 
 check-diff: reviewable ## Execute auto-gen code commands and ensure branch is clean
 	git --no-pager diff
