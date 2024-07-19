@@ -65,7 +65,7 @@ help: ## Display this help.
 
 ##@ Static Analysis
 
-reviewable: manifests fmt vet lint reviewable-ext ## Ensure code is ready for review
+reviewable: manifests fmt vet lint reviewable-ext frigate ## Ensure code is ready for review
 	git submodule update --remote
 	go mod tidy
 
@@ -89,6 +89,10 @@ vet: ## Run go vet against code.
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
 	$(GOLANGCI_LINT) run
+
+.PHONY: frigate
+frigate-default: ## optional frigate command (to be overridden)
+	@$(OK) frigate (no-op)
 
 ##@ Test
 
