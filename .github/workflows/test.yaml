@@ -22,6 +22,14 @@ jobs:
           cache: false
           go-version-file: go.mod
 
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5
+        with:
+          python-version: '3.9'
+          check-latest: true
+
+      - name: Set up frigate
+        run: pip install frigate
+
       - name: Ensure Reviewable
         run: make check-diff
         env:
@@ -80,7 +88,7 @@ jobs:
           if [ -f $GITHUB_WORKSPACE/lintconf.yaml ]; then
             ctArgs="--lint-conf $GITHUB_WORKSPACE/lintconf.yaml"
           fi
-          ct lint --validate-maintainers=false --check-version-increment=false --chart-dirs chart --target-branch ${{ github.event.repository.default_branch }} --print-config $ctArgs
+          ct lint --validate-maintainers=false --check-version-increment=false --chart-dirs chart --target-branch ${{ github.event.repository.default_branch }} $ctArgs
 
       - name: Set short SHA
         id: short-sha
