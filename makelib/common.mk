@@ -71,7 +71,7 @@ reviewable: manifests fmt vet lint reviewable-ext frigate ## Ensure code is read
 
 .PHONY: reviewable-ext-default
 reviewable-ext-default: ## optional reviewability extension (to be overridden)
-	@$(OK) reviewability extension (no-op)
+	@$(OK) reviewability extension no-op
 
 check-diff: reviewable ## Execute auto-gen code commands and ensure branch is clean
 	git --no-pager diff
