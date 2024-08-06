@@ -22,7 +22,7 @@ generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and
 # (i.e. docker build --platform linux/arm64 ). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker-build
-docker-build: test ## Build docker image with the manager.
+docker-build: ## Build docker image with the manager.
 	$(CONTAINER_TOOL) build -t ${IMG} . --platform linux/$(GOARCH)
 
 .PHONY: docker-push
