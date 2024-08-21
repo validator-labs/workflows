@@ -1,0 +1,29 @@
+name: Create Issue
+
+on: 
+  workflow_call:
+
+concurrency: 
+  group: create-issue-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  create-issue:
+    if: contains(github.event.issue.labels.*.name, 'validatorctl')
+    runs-on: [self-hosted, Linux, X64, validator]
+    steps:
+      - name: Filter Labels
+        id: filter_labels 
+        run: |
+          LABELS=$(echo '${{ toJson(github.event.issue.labels) }}' | jq -r '[.[] | select(.name != "validatorctl") | .name] | join(",")')
+          echo "::set-output name=labels::$LABELS"
+      - name: Create Issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: ${{ github.event.issue.title }}
+          body: ${{ github.event.issue.body }}
+          owner: validator-labs
+          repo: validatorctl
+          assignees: ${{ github.event.issue.assignees.*.login }}
+          labels: ${{ steps.filter_labels.outputs.labels }}
