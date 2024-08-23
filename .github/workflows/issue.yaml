@@ -59,8 +59,10 @@ jobs:
 
       - name: Create Project Card
         id: create_project_card
+        env:
+          PROJECT_ID: PVT_kwDOCVI7fM4AjJOl
         run: |
           curl --request POST \
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"${{ secrets.PROJECT_ID }}\" contentId: \"${{ steps.get_issue_id.outputs.issue_id }}\"}) {item {id}}}"}' 
+            --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"${{ env.PROJECT_ID }}\" contentId: \"${{ steps.get_issue_id.outputs.issue_id }}\"}) {item {id}}}"}' 
