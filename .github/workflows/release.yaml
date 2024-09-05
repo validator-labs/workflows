@@ -55,8 +55,9 @@ jobs:
           commit_username: validator-labs-bot
           commit_email: bot@noreply.validator-labs.io
       - name: Trigger docs.crd.dev index
+        if: ${{ needs.release-please.outputs.tag_name }}
         run: |
-          curl -v https://doc.crds.dev/github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}@${{ github.event.inputs.tag }}
+          curl -v https://doc.crds.dev/github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}@${{ github.event.inputs.tag }}
           echo "Triggered docs.crd.dev to index ${{ github.event.repository.name }}@${{ github.event.inputs.tag }}"
   build-container:
     if: needs.release-please.outputs.releases_created == 'true'
