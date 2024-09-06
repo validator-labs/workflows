@@ -57,8 +57,8 @@ jobs:
       - name: Trigger docs.crd.dev index
         if: needs.release-please.outputs.releases_created == 'true'
         run: |
-          curl -v https://doc.crds.dev/github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}@${{ github.event.outputs.tag_name }}
-          echo "Triggered docs.crd.dev to index ${{ github.event.repository.name }}@${{ github.event.outputs.tag_name }}"
+          curl -v https://doc.crds.dev/github.com/validator-labs/${{ github.event.repository.name }}@${{ needs.release-please.outputs.tag_name }}
+          echo "Triggered docs.crd.dev to index ${{ github.event.repository.name }}@${{ needs.release-please.outputs.tag_name }}"
   build-container:
     if: needs.release-please.outputs.releases_created == 'true'
     needs:
