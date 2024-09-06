@@ -54,7 +54,11 @@ jobs:
           branch: ${{ env.GITHUB_PAGES_BRANCH }}
           commit_username: validator-labs-bot
           commit_email: bot@noreply.validator-labs.io
-          
+      - name: Trigger docs.crd.dev index
+        if: needs.release-please.outputs.releases_created == 'true'
+        run: |
+          curl -v https://doc.crds.dev/github.com/validator-labs/${{ github.event.repository.name }}@${{ needs.release-please.outputs.tag_name }}
+          echo "Triggered docs.crd.dev to index ${{ github.event.repository.name }}@${{ needs.release-please.outputs.tag_name }}"
   build-container:
     if: needs.release-please.outputs.releases_created == 'true'
     needs:
