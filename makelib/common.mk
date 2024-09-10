@@ -98,7 +98,7 @@ frigate-default: ## optional frigate command (to be overridden)
 
 .PHONY: test-default
 test-default: manifests generate fmt vet envtest helm setup-validator ## Run tests.
-	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
+	IS_TEST=true KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
 .PHONY: coverage-default
 coverage-default: ## Show global test coverage
