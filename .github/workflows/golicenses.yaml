@@ -11,7 +11,7 @@ jobs:
   golicenses:
     runs-on: [self-hosted, Linux, X64, validator]
     container:
-      image: gcr.io/spectro-images-public/golang:1.22-alpine
+      image: gcr.io/spectro-images-public/golang:1.23-alpine
     steps:
       - name: checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
