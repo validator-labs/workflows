@@ -30,6 +30,11 @@ jobs:
       - name: Set up frigate
         run: pip install frigate
 
+      - name: Run tmate
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: false
+
       - name: Ensure Reviewable
         run: make check-diff
         env:
