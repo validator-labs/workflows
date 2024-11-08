@@ -41,7 +41,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Test
-        run: make test
+        run: |
+          helm repo add validator https://validator-labs.github.io/validator
+          helm repo update
+          make test
 
       - name: Workaround for https://github.com/codecov/feedback/issues/263
         run: |
