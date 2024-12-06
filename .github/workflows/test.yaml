@@ -62,7 +62,7 @@ jobs:
     runs-on: [self-hosted, Linux, X64, validator]
     if: "!(contains(github.head_ref, 'release-please') || contains(github.ref, 'release-please'))"
     env:
-      IMAGE_TAG: ${{ github.run_id }}
+      IMAGE_TAG: ${{ github.event.repository.default_branch }}
       IMAGE: quay.io/validator-labs/${{ github.event.repository.name }}
 
     steps:
@@ -127,7 +127,9 @@ jobs:
             ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
           builder: ${{ steps.buildx.outputs.name }}
           push: false
-          # load: true
+          cache-from: type=gha,scope=${{ github.ref_name }}-${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+          cache-to: type=gha,scope=${{ github.ref_name }}-${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+          load: true
 
       - name: Load Docker Image into kind Cluster
         run: kind load docker-image ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
