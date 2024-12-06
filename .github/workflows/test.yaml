@@ -121,13 +121,13 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           target: production
           tags: |
             ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
           builder: ${{ steps.buildx.outputs.name }}
           push: false
-          load: true
+          # load: true
 
       - name: Load Docker Image into kind Cluster
         run: kind load docker-image ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
