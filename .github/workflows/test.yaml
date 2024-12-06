@@ -127,8 +127,6 @@ jobs:
             ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
           builder: ${{ steps.buildx.outputs.name }}
           push: false
-          cache-from: type=gha,scope=${{ github.ref_name }}-${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
-          cache-to: type=gha,scope=${{ github.ref_name }}-${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
           load: true
 
       - name: Load Docker Image into kind Cluster
