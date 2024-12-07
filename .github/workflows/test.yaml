@@ -113,10 +113,12 @@ jobs:
           cluster_name: ct-${{ steps.short-sha.outputs.sha }}
 
       - name: Set up Docker Buildx
+        if: steps.list-changed.outputs.changed == 'true'
         id: buildx
         uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3
 
       - name: Build Docker Image
+        if: steps.list-changed.outputs.changed == 'true'
         uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355 # v6
         with:
           context: .
@@ -132,6 +134,7 @@ jobs:
           load: true
 
       - name: Load Docker Image into kind Cluster
+        if: steps.list-changed.outputs.changed == 'true'
         run: kind load docker-image ${{ env.IMAGE }}:${{ env.IMAGE_TAG }} --name ct-${{ steps.short-sha.outputs.sha }}
 
       - name: Run chart-testing (install)
