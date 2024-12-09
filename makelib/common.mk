@@ -98,7 +98,20 @@ frigate-default: ## optional frigate command (to be overridden)
 
 .PHONY: test-default
 test-default: manifests generate fmt vet envtest helm setup-validator ## Run tests.
-	IS_TEST=true KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
+	IS_TEST=true KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $(shell go list ./... | grep -v tests/e2e) -coverprofile cover.out
+
+.PHONY: test-e2e
+test-e2e: manifests generate fmt vet ## Run the e2e tests. Expected an isolated environment using Kind.
+	IS_TEST=true
+	@command -v kind >/dev/null 2>&1 || { \
+		echo "Kind is not installed. Please install Kind manually."; \
+		exit 1; \
+	}
+	@kind get clusters | grep -q 'kind' || { \
+		echo "No Kind cluster is running. Please start a Kind cluster before running the e2e tests."; \
+		exit 1; \
+	}
+	go test ./tests/e2e/ -v -ginkgo.v
 
 .PHONY: coverage-default
 coverage-default: ## Show global test coverage
