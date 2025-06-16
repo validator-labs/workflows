@@ -11,7 +11,7 @@ jobs:
   golicenses:
     runs-on: [self-hosted, Linux, X64, validator]
     container:
-      image: gcr.io/spectro-images-public/golang:1.23-alpine
+      image: us-docker.pkg.dev/palette-images/build-base-images/golang:1.23-alpine
     steps:
       - name: checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
