@@ -35,7 +35,7 @@ jobs:
 
       - name: Create Issue
         id: create_issue
-        uses: dacbd/create-issue-action@main
+        uses: dacbd/create-issue-action@fec641442c0897e734fad173cfe83ae21a2284a3 # main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: ${{ github.event.issue.title }}
